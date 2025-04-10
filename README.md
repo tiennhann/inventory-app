@@ -1,63 +1,71 @@
 # Inventory Management System
 
-A MongoDB and Node.js powered inventory management system that allows for the creation, reading, and querying of inventory items and manufacturers.
+A Node.js and MongoDB powered web application for inventory management.
+
+## Features
+
+- Create, Read, and Query documents within a MongoDB collection
+- Each product document has 5 fields (name, description, price, quantity, createdAt)
+- HTML forms for creating new documents
+- Display all objects in the collection
+- Query products with parameters
+
+
 
 ## Deployment
 
 This application is deployed at: https://nle.cs382.net
 
+## Demo
+
+[Download Demo Video](./demo.mov)
+
 ## Routes
 
-### Web UI Routes
+### Pages
 
-- `/` - Home page
-- `/upload` - Form to create a new inventory item
-- `/upload-manufacturer` - Form to create a new manufacturer
-- `/list` - List all inventory items
-- `/list-manufacturers` - List all manufacturers
-- `/query` - Interface for querying inventory items
+- `/` - Home page with navigation links
+- `/upload` - Form to add new products
+- `/list` - View all products in the database
+- `/query` - Query products based on price, sort by various fields
 
-### REST API Routes
-
-#### Products
+### API
 
 - `POST /api/products` - Create a new product
   - Example request body:
-    ```json
-    {
-      "name": "Laptop",
-      "description": "High-performance laptop",
-      "price": 1200,
-      "quantity": 50,
-      "manufacturer": "65f1234567890abcdef12345" // ObjectId reference to a manufacturer
-    }
-    ```
+  ```json
+  {
+    "name": "Product Name",
+    "description": "Product Description",
+    "price": 19.99,
+    "quantity": 100
+  }
+  ```
 
 - `GET /api/products` - Get all products
-  - Example: `/api/products`
 
-- `GET /api/products?query=parameters` - Query products
-  - Example: `/api/products?price[lt]=1000` - Get products less than $1000
-  - Example: `/api/products?name=Laptop` - Get products with name "Laptop"
-  - Example: `/api/products?quantity[gt]=10` - Get products with quantity greater than 10
-  - Example: `/api/products?sort=price` - Get products sorted by price ascending
-  - Example: `/api/products?sort=-price` - Get products sorted by price descending
+- `GET /api/products/query` - Query products with parameters
+  - Query Parameters:
+    - `priceBelow` - Filter products below a certain price
+    - `sortBy` - Sort by field (price, name, quantity, createdAt)
+    - `order` - Sort order (asc, desc)
+  - Example: `/api/products/query?priceBelow=50&sortBy=price&order=asc`
 
-#### Manufacturers
 
-- `POST /api/manufacturers` - Create a new manufacturer
-  - Example request body:
-    ```json
-    {
-      "name": "Tech Corp",
-      "location": "San Francisco, CA",
-      "founded": "2005-01-15T00:00:00.000Z",
-      "contactEmail": "contact@techcorp.com"
-    }
-    ```
+## Setup and Running
 
-- `GET /api/manufacturers` - Get all manufacturers
-  - Example: `/api/manufacturers`
+### Development
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Create a `.env` file based on the example
+4. Run the development server: `npm run dev`
+
+### Docker Deployment
+
+1. Make sure Docker and Docker Compose are installed
+2. Build and run the containers: `docker-compose up -d`
+3. Access the application at `http://localhost:3000` or the assigned port
 
 ## Technologies Used
 
@@ -65,8 +73,14 @@ This application is deployed at: https://nle.cs382.net
 - Express.js
 - MongoDB
 - Mongoose
-- EJS Templates
-- Docker/Podman for containerization
+- EJS for templating
+- Docker for containerization
+
+## Environment Variables
+
+- `PORT`: The port on which the application runs
+- `MONGODB_URI`: The MongoDB connection string
+- `NODE_ENV`: The environment in which the application runs
 
 ## Local Development
 
