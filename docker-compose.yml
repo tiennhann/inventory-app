@@ -4,7 +4,7 @@ services:
   app:
     build: .
     ports:
-      - "${PORT}:3000"
+      - "20925:3000"
     depends_on:
       - mongodb
     environment:
@@ -19,7 +19,7 @@ services:
     volumes:
       - mongo-data:/data/db
     ports:
-      - "27017:27017"
+      - "27117:27017"
     restart: always
     networks:
       - app-network

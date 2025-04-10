@@ -1,60 +1,63 @@
 # Inventory Management System
 
-A Node.js and MongoDB powered web application for inventory management.
+A MongoDB and Node.js powered inventory management system that allows for the creation, reading, and querying of inventory items and manufacturers.
 
-## Features
+## Deployment
 
-- Create, Read, and Query documents within a MongoDB collection
-- Each product document has 5 fields (name, description, price, quantity, createdAt)
-- HTML forms for creating new documents
-- Display all objects in the collection
-- Query products with parameters
+This application is deployed at: https://nle.cs382.net
 
 ## Routes
 
-### Pages
+### Web UI Routes
 
-- `/` - Home page with navigation links
-- `/upload` - Form to add new products
-- `/list` - View all products in the database
-- `/query` - Query products based on price, sort by various fields
+- `/` - Home page
+- `/upload` - Form to create a new inventory item
+- `/upload-manufacturer` - Form to create a new manufacturer
+- `/list` - List all inventory items
+- `/list-manufacturers` - List all manufacturers
+- `/query` - Interface for querying inventory items
 
-### API
+### REST API Routes
+
+#### Products
 
 - `POST /api/products` - Create a new product
   - Example request body:
-  ```json
-  {
-    "name": "Product Name",
-    "description": "Product Description",
-    "price": 19.99,
-    "quantity": 100
-  }
-  ```
+    ```json
+    {
+      "name": "Laptop",
+      "description": "High-performance laptop",
+      "price": 1200,
+      "quantity": 50,
+      "manufacturer": "65f1234567890abcdef12345" // ObjectId reference to a manufacturer
+    }
+    ```
 
 - `GET /api/products` - Get all products
+  - Example: `/api/products`
 
-- `GET /api/products/query` - Query products with parameters
-  - Query Parameters:
-    - `priceBelow` - Filter products below a certain price
-    - `sortBy` - Sort by field (price, name, quantity, createdAt)
-    - `order` - Sort order (asc, desc)
-  - Example: `/api/products/query?priceBelow=50&sortBy=price&order=asc`
+- `GET /api/products?query=parameters` - Query products
+  - Example: `/api/products?price[lt]=1000` - Get products less than $1000
+  - Example: `/api/products?name=Laptop` - Get products with name "Laptop"
+  - Example: `/api/products?quantity[gt]=10` - Get products with quantity greater than 10
+  - Example: `/api/products?sort=price` - Get products sorted by price ascending
+  - Example: `/api/products?sort=-price` - Get products sorted by price descending
 
-## Setup and Running
+#### Manufacturers
 
-### Development
+- `POST /api/manufacturers` - Create a new manufacturer
+  - Example request body:
+    ```json
+    {
+      "name": "Tech Corp",
+      "location": "San Francisco, CA",
+      "founded": "2005-01-15T00:00:00.000Z",
+      "contactEmail": "contact@techcorp.com"
+    }
+    ```
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Create a `.env` file based on the example
-4. Run the development server: `npm run dev`
-
-### Docker Deployment
-
-1. Make sure Docker and Docker Compose are installed
-2. Build and run the containers: `docker-compose up -d`
-3. Access the application at `http://localhost:3000` or the assigned port
+- `GET /api/manufacturers` - Get all manufacturers
+  - Example: `/api/manufacturers`
 
 ## Technologies Used
 
@@ -62,18 +65,23 @@ A Node.js and MongoDB powered web application for inventory management.
 - Express.js
 - MongoDB
 - Mongoose
-- EJS for templating
-- Docker for containerization 
+- EJS Templates
+- Docker/Podman for containerization
 
-## Environment Variables
+## Local Development
 
-- `PORT`: The port on which the application runs
-- `MONGODB_URI`: The MongoDB connection string
-- `NODE_ENV`: The environment in which the application runs 
+1. Clone the repository
+2. Install dependencies with `npm install`
+3. Start MongoDB locally or use Docker Compose: `docker-compose up -d mongodb`
+4. Start the application: `npm run dev`
+5. Visit http://localhost:3000
 
-## Docker Compose Configuration
+## Deployment Instructions
 
-```
-ports:
-  - "20925:3000"
-``` 
+1. SSH into the server: `ssh username@cs382.net`
+2. Clone this repository
+3. Use Podman Compose to start the application:
+   ```
+   podman-compose up -d
+   ```
+4. The application will be available at https://nle.cs382.net 
