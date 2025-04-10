@@ -20,8 +20,6 @@ This application is deployed at: https://nle.cs382.net
 
 [Download Demo Video](./demo.mov)
 
-## Routes
-
 ### Pages
 
 - `/` - Home page with navigation links
