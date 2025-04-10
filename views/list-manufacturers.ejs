@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Manufacturers</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>All Manufacturers</h1>
+    <div id="manufacturers-container">
+      <div class="loader"></div>
+    </div>
+    <a href="/" class="btn btn-secondary">Back to Home</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        const response = await fetch('/api/manufacturers');
+        const manufacturers = await response.json();
+        
+        const manufacturersContainer = document.getElementById('manufacturers-container');
+        
+        if (manufacturers.length === 0) {
+          manufacturersContainer.innerHTML = '<p>No manufacturers found.</p>';
+        } else {
+          let html = '<table class="products-table">';
+          html += '<thead><tr><th>Name</th><th>Country</th><th>Website</th><th>Founded Year</th></tr></thead>';
+          html += '<tbody>';
+          
+          manufacturers.forEach(manufacturer => {
+            html += `
+              <tr>
+                <td>${manufacturer.name}</td>
+                <td>${manufacturer.country}</td>
+                <td>${manufacturer.website ? `<a href="${manufacturer.website}" target="_blank">${manufacturer.website}</a>` : 'N/A'}</td>
+                <td>${manufacturer.foundedYear || 'N/A'}</td>
+              </tr>
+            `;
+          });
+          
+          html += '</tbody></table>';
+          manufacturersContainer.innerHTML = html;
+        }
+      } catch (error) {
+        document.getElementById('manufacturers-container').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+      }
+    });
+  </script>
+</body>
+</html> 

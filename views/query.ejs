@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Query Products</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Query Products</h1>
+    <form id="queryForm" class="form">
+      <div class="form-group">
+        <label for="priceBelow">Price Below</label>
+        <input type="number" id="priceBelow" name="priceBelow" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label for="sortBy">Sort By</label>
+        <select id="sortBy" name="sortBy">
+          <option value="">Select</option>
+          <option value="price">Price</option>
+          <option value="name">Name</option>
+          <option value="quantity">Quantity</option>
+          <option value="createdAt">Date Created</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="order">Order</label>
+        <select id="order" name="order">
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
+        </select>
+      </div>
+      <button type="submit" class="btn">Search</button>
+    </form>
+    <div id="results-container">
+      <p>Submit the form to see results.</p>
+    </div>
+    <a href="/" class="btn btn-secondary">Back to Home</a>
+  </div>
+
+  <script>
+    document.getElementById('queryForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const priceBelow = document.getElementById('priceBelow').value;
+      const sortBy = document.getElementById('sortBy').value;
+      const order = document.getElementById('order').value;
+      
+      // Build query string
+      let queryParams = [];
+      if (priceBelow) queryParams.push(`priceBelow=${priceBelow}`);
+      if (sortBy) queryParams.push(`sortBy=${sortBy}`);
+      if (order) queryParams.push(`order=${order}`);
+      
+      const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+      
+      try {
+        const response = await fetch(`/api/products/query${queryString}`);
+        const products = await response.json();
+        
+        const resultsContainer = document.getElementById('results-container');
+        
+        if (products.length === 0) {
+          resultsContainer.innerHTML = '<p>No products found matching your criteria.</p>';
+        } else {
+          let html = '<table class="products-table">';
+          html += '<thead><tr><th>Name</th><th>Description</th><th>Price</th><th>Quantity</th><th>Manufacturer</th><th>Created At</th></tr></thead>';
+          html += '<tbody>';
+          
+          products.forEach(product => {
+            const createdAt = new Date(product.createdAt).toLocaleDateString();
+            const manufacturer = product.manufacturer ? product.manufacturer.name : 'N/A';
+            
+            html += `
+              <tr>
+                <td>${product.name}</td>
+                <td>${product.description}</td>
+                <td>$${product.price.toFixed(2)}</td>
+                <td>${product.quantity}</td>
+                <td>${manufacturer}</td>
+                <td>${createdAt}</td>
+              </tr>
+            `;
+          });
+          
+          html += '</tbody></table>';
+          resultsContainer.innerHTML = html;
+        }
+      } catch (error) {
+        document.getElementById('results-container').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+      }
+    });
+  </script>
+</body>
+</html> 

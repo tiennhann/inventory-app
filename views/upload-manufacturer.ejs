@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Manufacturer</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Add New Manufacturer</h1>
+    <form id="manufacturerForm" class="form">
+      <div class="form-group">
+        <label for="name">Manufacturer Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="country">Country</label>
+        <input type="text" id="country" name="country" required>
+      </div>
+      <div class="form-group">
+        <label for="website">Website</label>
+        <input type="url" id="website" name="website">
+      </div>
+      <div class="form-group">
+        <label for="foundedYear">Founded Year</label>
+        <input type="number" id="foundedYear" name="foundedYear" min="1000" max="2023">
+      </div>
+      <button type="submit" class="btn">Add Manufacturer</button>
+    </form>
+    <div id="message"></div>
+    <a href="/" class="btn btn-secondary">Back to Home</a>
+  </div>
+
+  <script>
+    document.getElementById('manufacturerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = {
+        name: document.getElementById('name').value,
+        country: document.getElementById('country').value,
+        website: document.getElementById('website').value,
+        foundedYear: document.getElementById('foundedYear').value
+      };
+      
+      try {
+        const response = await fetch('/api/manufacturers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          document.getElementById('message').innerHTML = '<div class="success">Manufacturer added successfully!</div>';
+          document.getElementById('manufacturerForm').reset();
+        } else {
+          document.getElementById('message').innerHTML = `<div class="error">Error: ${data.error}</div>`;
+        }
+      } catch (error) {
+        document.getElementById('message').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+      }
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Products</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>All Products</h1>
+    <div id="products-container">
+      <div class="loader"></div>
+    </div>
+    <a href="/" class="btn btn-secondary">Back to Home</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        const response = await fetch('/api/products');
+        const products = await response.json();
+        
+        const productsContainer = document.getElementById('products-container');
+        
+        if (products.length === 0) {
+          productsContainer.innerHTML = '<p>No products found.</p>';
+        } else {
+          let html = '<table class="products-table">';
+          html += '<thead><tr><th>Name</th><th>Description</th><th>Price</th><th>Quantity</th><th>Manufacturer</th><th>Created At</th></tr></thead>';
+          html += '<tbody>';
+          
+          products.forEach(product => {
+            const createdAt = new Date(product.createdAt).toLocaleDateString();
+            const manufacturer = product.manufacturer ? product.manufacturer.name : 'N/A';
+            
+            html += `
+              <tr>
+                <td>${product.name}</td>
+                <td>${product.description}</td>
+                <td>$${product.price.toFixed(2)}</td>
+                <td>${product.quantity}</td>
+                <td>${manufacturer}</td>
+                <td>${createdAt}</td>
+              </tr>
+            `;
+          });
+          
+          html += '</tbody></table>';
+          productsContainer.innerHTML = html;
+        }
+      } catch (error) {
+        document.getElementById('products-container').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+      }
+    });
+  </script>
+</body>
+</html> 
